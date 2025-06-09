@@ -11,7 +11,7 @@ export default function Product() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch(`${BASE_URL}/product`);
+        const response = await fetch(`https://ecommerce-backend-production-8221.up.railway.app/product`);
         let data = await response.json();
         setProducts(data);
       } catch {

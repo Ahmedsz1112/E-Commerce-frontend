@@ -28,7 +28,7 @@ export default function LoginPage() {
 
     // fetching
 
-    const response = await fetch(`${BASE_URL}/user/login`, {
+    const response = await fetch(`https://ecommerce-backend-production-8221.up.railway.app/user/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

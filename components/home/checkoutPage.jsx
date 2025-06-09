@@ -20,7 +20,7 @@ export default function CartPage() {
       return;
     }
 
-    const response = await fetch(`${BASE_URL}/cart/checkout`, {
+    const response = await fetch(`https://ecommerce-backend-production-8221.up.railway.app/cart/checkout`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

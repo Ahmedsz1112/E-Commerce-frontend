@@ -35,7 +35,7 @@ const CartProvider = ({ children }) => {
   const fetchCart = async () => {
     if (!token) return;
     try {
-      const response = await fetch(`${BASE_URL}/cart`, {
+      const response = await fetch(`https://ecommerce-backend-production-8221.up.railway.app/cart`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -58,7 +58,7 @@ const CartProvider = ({ children }) => {
 
   const addItemsToCart = async (productId) => {
     try {
-      const response = await fetch(`${BASE_URL}/cart/items`, {
+      const response = await fetch(`https://ecommerce-backend-production-8221.up.railway.app/cart/items`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -79,7 +79,7 @@ const CartProvider = ({ children }) => {
 
   const updateItemInCart = async (productId, quantity) => {
     try {
-      const response = await fetch(`${BASE_URL}/cart/items`, {
+      const response = await fetch(`https://ecommerce-backend-production-8221.up.railway.app/cart/items`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -103,7 +103,7 @@ const CartProvider = ({ children }) => {
 
   const deleteItemInCart = async (productId) => {
     try {
-      const response = await fetch(`${BASE_URL}/cart/items/${productId}`, {
+      const response = await fetch(`https://ecommerce-backend-production-8221.up.railway.app/cart/items/${productId}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -125,7 +125,7 @@ const CartProvider = ({ children }) => {
 
   const removeAllItems = async () => {
     try {
-      const response = await fetch(`${BASE_URL}/cart`, {
+      const response = await fetch(`https://ecommerce-backend-production-8221.up.railway.app/cart`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,

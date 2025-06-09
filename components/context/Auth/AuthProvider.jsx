@@ -37,7 +37,7 @@ const AuthProvider = ({ children }) => {
   };
 
   const getMyOrders = async () => {
-    const response = await fetch(`${BASE_URL}/user/my-order`, {
+    const response = await fetch(`https://ecommerce-backend-production-8221.up.railway.app/user/my-order`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
