@@ -25,7 +25,8 @@ export default function Product() {
   if (error) {
     return <p>Message error and Not Found Data</p>;
   }
-
+  console.log(products);
+  
   return (
    <div className="bg-gray-50 py-12">
   <div className="mx-auto max-w-7xl px-6 lg:px-8">

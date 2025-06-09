@@ -27,6 +27,8 @@ const CartProvider = ({ children }) => {
 
       const cart = await response.json();
 
+      
+
       const cartItemsMapped = cart.items.map(({ product, quantity }) => ({
         productId: product._id,
         title: product.title,
