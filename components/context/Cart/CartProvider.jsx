@@ -10,38 +10,50 @@ const CartProvider = ({ children }) => {
   const [totalAmount, setTotalAmount] = useState(0);
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    if (!token) {
-      return;
+  const mapCartItems = (items) =>
+    items.map(({ product, quantity }) => ({
+      productId: product._id,
+      title: product.title,
+      image: product.image,
+      quantity,
+      unitPrice: product.price,
+    }));
+
+  const handleResponse = async (response, errorMsg) => {
+    if (!response.ok) {
+      setError(errorMsg);
+      return null;
     }
-    const fetchCart = async () => {
+    try {
+      return await response.json();
+    } catch {
+      setError("Failed to parse server response.");
+      return null;
+    }
+  };
+
+  const fetchCart = async () => {
+    if (!token) return;
+    try {
       const response = await fetch(`${BASE_URL}/cart`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
-      if (!response.ok) {
-        setError("Failed to fetch user cart. please try again");
-      }
+      const cart = await handleResponse(response, "Failed to fetch cart");
+      if (!cart) return;
 
-      const cart = await response.json();
-
-      
-
-      const cartItemsMapped = cart.items.map(({ product, quantity }) => ({
-        productId: product._id,
-        title: product.title,
-        image: product.image,
-        quantity,
-        unitPrice: product.price,
-      }));
-
-      setCartItems(cartItemsMapped);
+      setCartItems(mapCartItems(cart.items));
       setTotalAmount(cart.totalAmount);
-    };
+    } catch (err) {
+      console.error(err);
+      setError("Something went wrong while fetching the cart.");
+    }
+  };
 
-    fetchCart();
+  useEffect(() => {
+    if (token) fetchCart();
   }, [token]);
 
   const addItemsToCart = async (productId) => {
@@ -52,31 +64,13 @@ const CartProvider = ({ children }) => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          productId,
-          quantity: 1,
-        }),
+        body: JSON.stringify({ productId, quantity: 1 }),
       });
 
-      if (!response.ok) {
-        setError("Failed to add to cart");
-      }
+      const cart = await handleResponse(response, "Failed to add item to cart");
+      if (!cart) return;
 
-      const cart = await response.json();
-
-      if (!cart) {
-        setError("Failed to add to cart");
-      }
-
-      const cartItemsMapped = cart.items.map(({ product, quantity }) => ({
-        productId: product._id,
-        title: product.title,
-        image: product.image,
-        quantity,
-        unitPrice: product.price,
-      }));
-
-      setCartItems([...cartItemsMapped]);
+      setCartItems(mapCartItems(cart.items));
       setTotalAmount(cart.totalAmount);
     } catch (err) {
       console.error(err);
@@ -91,31 +85,16 @@ const CartProvider = ({ children }) => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          productId,
-          quantity,
-        }),
+        body: JSON.stringify({ productId, quantity }),
       });
 
-      if (!response.ok) {
-        setError("Failed to update to cart");
-      }
+      const cart = await handleResponse(
+        response,
+        "Failed to update item in cart"
+      );
+      if (!cart) return;
 
-      const cart = await response.json();
-
-      if (!cart) {
-        setError("Failed to update to cart");
-      }
-
-      const cartItemsMapped = cart.items.map(({ product, quantity }) => ({
-        productId: product._id,
-        title: product.title,
-        image: product.image,
-        quantity,
-        unitPrice: product.price,
-      }));
-
-      setCartItems([...cartItemsMapped]);
+      setCartItems(mapCartItems(cart.items));
       setTotalAmount(cart.totalAmount);
     } catch (err) {
       console.error(err);
@@ -127,64 +106,53 @@ const CartProvider = ({ children }) => {
       const response = await fetch(`${BASE_URL}/cart/items/${productId}`, {
         method: "DELETE",
         headers: {
-          Authorization: `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
 
-      if (!response.ok) {
-        setError("Failed to delete to cart");
-      }
+      const cart = await handleResponse(
+        response,
+        "Failed to delete item from cart"
+      );
+      if (!cart) return;
 
-      const cart = await response.json();
-
-      if (!cart) {
-        setError("Failed to delete to cart");
-      }
-
-      const cartItemsMapped = cart.items.map(({ product, quantity }) => ({
-        productId: product._id,
-        title: product.title,
-        image: product.image,
-        quantity,
-        unitPrice: product.price,
-      }));
-
-      setCartItems([...cartItemsMapped]);
+      setCartItems(mapCartItems(cart.items));
       setTotalAmount(cart.totalAmount);
     } catch (err) {
       console.error(err);
     }
   };
 
-  const removeAllItem = async() => {
-     try {
+  const removeAllItems = async () => {
+    try {
       const response = await fetch(`${BASE_URL}/cart`, {
         method: "DELETE",
         headers: {
-          Authorization: `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
 
-      if (!response.ok) {
-        setError("Failed to empty to cart");
-      }
-
-      const cart = await response.json();
-
-      if (!cart) {
-        setError("Failed to delete to cart");
-      }
+      const cart = await handleResponse(response, "Failed to empty the cart");
+      if (!cart) return;
 
       setCartItems([]);
       setTotalAmount(0);
     } catch (err) {
       console.error(err);
     }
-  }
+  };
 
   return (
     <CartContext.Provider
-      value={{ cartItems, totalAmount, addItemsToCart, updateItemInCart , deleteItemInCart , removeAllItem }}
+      value={{
+        cartItems,
+        totalAmount,
+        addItemsToCart,
+        updateItemInCart,
+        deleteItemInCart,
+        removeAllItems,
+        error,
+      }}
     >
       {children}
     </CartContext.Provider>
