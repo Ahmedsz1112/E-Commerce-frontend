@@ -1,1 +1,1 @@
-export const BASE_URL = "https://ecommerce-backend-production-8221.up.railway.app/" 
+export const BASE_URL="https://ecommerce-backend-production-8221.up.railway.app" 
