@@ -9,7 +9,7 @@ export default function CartPage() {
     totalAmount,
     updateItemInCart,
     deleteItemInCart,
-    removeAllItem,
+    removeAllItems,
   } = useCart();
 
   const handleQuantity = (productId, quantity) => {
@@ -22,7 +22,7 @@ export default function CartPage() {
   };
 
   const handleRemoveAllItem = () => {
-    removeAllItem();
+    removeAllItems();
   };
 
   const handleCheckout = () => {
